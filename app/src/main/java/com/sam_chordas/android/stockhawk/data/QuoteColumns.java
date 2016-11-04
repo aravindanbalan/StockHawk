@@ -25,4 +25,33 @@ public class QuoteColumns {
   public static final String ISUP = "is_up";
   @DataType(DataType.Type.INTEGER) @NotNull
   public static final String ISCURRENT = "is_current";
+
+  //Stock description fields
+  @DataType(DataType.Type.TEXT)
+  @NotNull
+  public static final String NAME = "name";
+  @DataType(DataType.Type.TEXT)
+  @NotNull
+  public static final String CURRENCY = "currency";
+  @DataType(DataType.Type.TEXT)
+  @NotNull
+  public static final String LASTTRADEDATE = "lasttradedate";
+  @DataType(DataType.Type.TEXT)
+  @NotNull
+  public static final String DAYLOW = "daylow";
+  @DataType(DataType.Type.TEXT)
+  @NotNull
+  public static final String DAYHIGH = "dayhigh";
+  @DataType(DataType.Type.TEXT)
+  @NotNull
+  public static final String YEARLOW = "yearlow";
+  @DataType(DataType.Type.TEXT)
+  @NotNull
+  public static final String YEARHIGH = "yearhigh";
+  @DataType(DataType.Type.TEXT)
+  @NotNull
+  public static final String EARNINGSSHARE = "earningsshare";
+  @DataType(DataType.Type.TEXT)
+  @NotNull
+  public static final String MARKETCAPITALIZATION = "marketcapitalization";
 }

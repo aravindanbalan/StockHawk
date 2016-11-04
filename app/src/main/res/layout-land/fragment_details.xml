@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+                android:layout_height="match_parent">
+        <FrameLayout android:id="@+id/stock_details"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content">
+            <View
+                    android:foregroundGravity="top|center"
+                    android:layout_width="match_parent"
+                    android:layout_height="?android:attr/actionBarSize"
+                    android:background="@color/material_purple_500"/>
+
+            <LinearLayout
+                          android:baselineAligned="false"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:weightSum="3"
+                          android:orientation="horizontal">
+
+                <include android:layout_weight="2"
+                         android:layout_width="0dp"
+                         android:layout_height="wrap_content"
+                         android:layout_margin="@dimen/activity_horizontal_margin"
+                         layout="@layout/chart_card_view"/>
+                <include
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        layout="@layout/details_card_view"/>
+
+            </LinearLayout>
+        </FrameLayout>
+    </ScrollView>
+
+    <TextView
+            android:id="@+id/details_emptyView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:text="@string/network_toast"
+            android:textSize="20sp"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
+
+    <include
+            android:id="@+id/chart_progress"
+            layout="@layout/progress_indicator"/>
+</RelativeLayout>

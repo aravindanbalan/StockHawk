@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" xmlns:tools="http://schemas.android.com/tools"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        app:contentPadding="@dimen/card_view_padding"
+        app:cardElevation="@dimen/card_view_elevation"
+        app:cardCornerRadius="@dimen/cardview_default_radius"
+        app:cardUseCompatPadding="true">
+
+    <android.support.v7.widget.GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:columnCount="2"
+            android:clipToPadding="false"
+            android:padding="@dimen/card_view_padding">
+
+        <TextView
+                android:layout_height="wrap_content"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                app:layout_gravity="fill|start"
+                android:gravity="center_vertical"
+                android:text="@string/stock_name"
+                android:textColor="@color/material_purple_500"/>
+
+        <TextView
+                android:gravity="center_vertical"
+                tools:text="Apple Inc."
+                app:layout_gravity="fill|end"
+                app:layout_rowWeight="1"
+                android:id="@+id/stock_name"/>
+
+        <TextView
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                app:layout_gravity="fill|start"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/stock_symbol"
+                android:textColor="@color/material_purple_500"/>
+
+        <TextView
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textAllCaps="true"
+                app:layout_gravity="fill|end"
+                app:layout_rowWeight="1"
+                tools:text="AAPL"
+                android:id="@+id/stocksymbol"/>
+
+        <TextView
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                app:layout_gravity="fill|start"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textColor="@color/material_purple_500"
+                android:text="@string/Lasttradedate"/>
+
+        <TextView
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:layout_gravity="fill|end"
+                tools:text="AAPL"
+                app:layout_rowWeight="1"
+                android:id="@+id/last_trade_date"/>
+
+        <TextView
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                app:layout_gravity="fill|start"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textColor="@color/material_purple_500"
+                android:text="@string/Daylow"/>
+
+        <TextView
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:layout_gravity="fill|end"
+                tools:text="AAPL"
+                app:layout_rowWeight="1"
+                android:id="@+id/daylow"/>
+
+        <TextView
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                app:layout_gravity="fill|start"
+                android:gravity="center_vertical"
+                android:textColor="@color/material_purple_500"
+                android:layout_height="wrap_content" android:text="@string/Dayhigh"/>
+
+        <TextView
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:layout_gravity="fill|end"
+                tools:text="AAPL"
+                app:layout_rowWeight="1"
+                android:id="@+id/dayhigh"/>
+
+        <TextView
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                app:layout_gravity="fill|start"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textColor="@color/material_purple_500"
+                android:text="@string/Yearlow"/>
+
+        <TextView
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                tools:text="AAPL"
+                app:layout_rowWeight="1"
+                app:layout_gravity="fill|end"
+                android:id="@+id/yearlow"/>
+
+        <TextView
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                app:layout_gravity="fill|start"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/Yearhigh"
+                android:textColor="@color/material_purple_500"/>
+
+        <TextView
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:layout_gravity="fill|end"
+                app:layout_rowWeight="1"
+                tools:text="AAPL"
+                android:id="@+id/yearhigh"/>
+    </android.support.v7.widget.GridLayout>
+</android.support.v7.widget.CardView>

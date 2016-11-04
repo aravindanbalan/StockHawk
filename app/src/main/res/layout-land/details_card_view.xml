@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardElevation="@dimen/card_view_elevation"
+        app:cardCornerRadius="@dimen/cardview_default_radius">
+
+    <LinearLayout
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <LinearLayout android:id="@+id/basic_details"
+                      android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="vertical">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin_min"
+                    android:gravity="center"
+                    android:textColor="@color/material_purple_500"
+                    tools:text="Microsoft corporation Inc."
+                    app:layout_gravity="end"
+                    android:id="@+id/stock_name"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin_min"
+                    android:gravity="center"
+                    android:textColor="@color/material_purple_500"
+                    app:layout_gravity="end"
+                    tools:text="AAPL"
+                    android:id="@+id/stocksymbol"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin_min"
+                    android:gravity="center"
+                    android:textColor="@color/material_purple_500"
+                    app:layout_gravity="end"
+                    tools:text="AAPL"
+                    android:id="@+id/last_trade_date"/>
+        </LinearLayout>
+
+        <android.support.v7.widget.GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:columnCount="2"
+                android:clipToPadding="false"
+                android:padding="@dimen/card_view_padding">
+
+            <TextView
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="start"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/material_purple_500"
+                    android:text="@string/Daylow"/>
+
+            <TextView
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="end"
+                    tools:text="AAPL"
+                    android:id="@+id/daylow"/>
+
+            <TextView
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="start"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/material_purple_500"
+                    android:layout_height="wrap_content" android:text="@string/Dayhigh"/>
+
+            <TextView
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    app:layout_gravity="end"
+                    app:layout_rowWeight="1"
+                    tools:text="AAPL"
+                    android:id="@+id/dayhigh"/>
+
+            <TextView
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="start"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/material_purple_500"
+                    android:text="@string/Yearlow"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    tools:text="AAPL"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="end"
+                    android:id="@+id/yearlow"/>
+
+            <TextView
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="start"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/Yearhigh"
+                    android:textColor="@color/material_purple_500"/>
+
+            <TextView
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="end"
+                    tools:text="AAPL"
+                    android:id="@+id/yearhigh"/>
+        </android.support.v7.widget.GridLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
