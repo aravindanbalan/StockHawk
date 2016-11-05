@@ -78,6 +78,7 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
         recyclerView.setAdapter(mCursorAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.attachToRecyclerView(recyclerView);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
