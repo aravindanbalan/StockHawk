@@ -46,9 +46,9 @@ public class StockHawkSyncAdapter extends AbstractThreadedSyncAdapter {
     private final String URL_APPEND = "&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
     private final String QUERY = "select * from yahoo.finance.quotes where symbol in (";
     private final String STOCK_SYMBOLS = "\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\")";
-    private final static String SYNC_TYPE_INIT = "init";
-    private final static String SYNC_TYPE_PERIODIC = "periodic";
-    private final static String SYNC_TYPE_ADD = "add";
+    public final static String SYNC_TYPE_INIT = "init";
+    public final static String SYNC_TYPE_PERIODIC = "periodic";
+    public final static String SYNC_TYPE_ADD = "add";
     private final static String SYMBOL = "symbol";
     private final String ENCODING = "UTF-8";
 
@@ -83,6 +83,7 @@ public class StockHawkSyncAdapter extends AbstractThreadedSyncAdapter {
         if (TextUtils.isEmpty(sync_type)) {
             sync_type = SYNC_TYPE_INIT;
         }
+        Log.i(LOG_TAG, "********* on perform sync : " + sync_type);
 
         if ((sync_type.equals(SYNC_TYPE_INIT) || sync_type.equals(SYNC_TYPE_PERIODIC))) {
             isUpdate = true;
@@ -98,6 +99,7 @@ public class StockHawkSyncAdapter extends AbstractThreadedSyncAdapter {
                     e.printStackTrace();
                 }
             } else {
+
                 DatabaseUtils.dumpCursor(initQueryCursor);
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++) {
@@ -242,10 +244,6 @@ public class StockHawkSyncAdapter extends AbstractThreadedSyncAdapter {
          */
         ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
 
-        /*
-         * Finally, let's do a sync to get things started
-         */
-        syncImmediately(context, SYNC_TYPE_INIT, null);
     }
 
     public static void initializeSyncAdapter(Context context) {

@@ -38,10 +38,10 @@
         </activity>
 
         <provider
-                android:authorities="com.sam_chordas.android.stockhawk.data.QuoteProvider"
+                android:authorities="@string/content_authority"
                 android:name="com.sam_chordas.android.stockhawk.data.generated.QuoteProvider"
-                android:exported="false"/>
-
+                android:exported="false"
+                android:syncable="true"/>
 
         <!-- SyncAdapter's dummy authentication service -->
         <service android:name=".sync.StockHawkAuthenticatorService">
@@ -56,7 +56,7 @@
         <!-- The SyncAdapter service -->
         <service
                 android:name=".sync.StockHawkSyncService"
-                android:exported="true">
+                android:exported="false">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
@@ -64,16 +64,6 @@
                     android:name="android.content.SyncAdapter"
                     android:resource="@xml/syncadapter"/>
         </service>
-
-
-        <service android:name="com.sam_chordas.android.stockhawk.service.StockTaskService"
-                 android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE"
-                 android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY"/>
-            </intent-filter>
-        </service>
-        <service android:name="com.sam_chordas.android.stockhawk.service.StockIntentService"/>
 
     </application>
 

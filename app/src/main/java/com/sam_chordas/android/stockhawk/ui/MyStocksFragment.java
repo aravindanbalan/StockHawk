@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -23,9 +22,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.PeriodicTask;
-import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
@@ -33,8 +29,7 @@ import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.rest.Utils;
-import com.sam_chordas.android.stockhawk.service.StockIntentService;
-import com.sam_chordas.android.stockhawk.service.StockTaskService;
+import com.sam_chordas.android.stockhawk.sync.StockHawkSyncAdapter;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
 /**
@@ -42,7 +37,6 @@ import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallb
  */
 
 public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private Intent mServiceIntent;
     private ItemTouchHelper mItemTouchHelper;
     private static final int CURSOR_LOADER_ID = 0;
     private QuoteCursorAdapter mCursorAdapter;
@@ -53,7 +47,6 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mServiceIntent = new Intent(getActivity(), StockIntentService.class);
         mContext = getActivity();
         setHasOptionsMenu(true);
     }
@@ -104,9 +97,7 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
                                         c.close();
                                     } else {
                                         // Add the stock to DB
-                                        mServiceIntent.putExtra("tag", "add");
-                                        mServiceIntent.putExtra("symbol", input.toString());
-                                        mContext.startService(mServiceIntent);
+                                        StockHawkSyncAdapter.syncImmediately(getActivity(), StockHawkSyncAdapter.SYNC_TYPE_ADD, input.toString());
                                     }
                                 }
                             })
@@ -123,34 +114,13 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
         mItemTouchHelper.attachToRecyclerView(recyclerView);
 
         if (savedInstanceState == null) {
-            // Run the initialize task service so that some stocks appear upon an empty database
-            mServiceIntent.putExtra("tag", "init");
             if (isConnected) {
-                getActivity().startService(mServiceIntent);
+                StockHawkSyncAdapter.syncImmediately(getActivity(), StockHawkSyncAdapter.SYNC_TYPE_INIT, null);
             } else {
                 networkToast();
             }
         }
 
-        if (isConnected) {
-            long period = 3600L;
-            long flex = 10L;
-            String periodicTag = "periodic";
-
-            // create a periodic task to pull stocks once every hour after the app has been opened. This
-            // is so Widget data stays up to date.
-            PeriodicTask periodicTask = new PeriodicTask.Builder()
-                    .setService(StockTaskService.class)
-                    .setPeriod(period)
-                    .setFlex(flex)
-                    .setTag(periodicTag)
-                    .setRequiredNetwork(Task.NETWORK_STATE_CONNECTED)
-                    .setRequiresCharging(false)
-                    .build();
-            // Schedule task with tag "periodic." This ensure that only the stocks present in the DB
-            // are updated.
-            GcmNetworkManager.getInstance(mContext).schedule(periodicTask);
-        }
         return rootView;
     }
 

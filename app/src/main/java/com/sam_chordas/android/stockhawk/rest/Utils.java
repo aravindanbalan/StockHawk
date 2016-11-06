@@ -89,6 +89,7 @@ public class Utils {
         try {
             String change = jsonObject.getString(PARAM_CHANGE);
             builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString(PARAM_SYMBOL));
+            Log.i(LOG_TAG, "************** bid value : " + jsonObject.getString(PARAM_BID) + "   for symbol : " + jsonObject.getString(PARAM_SYMBOL));
             builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString(PARAM_BID)));
             builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
                     jsonObject.getString(PARAM_CHANGE_IN_PERCENTAGE), true));

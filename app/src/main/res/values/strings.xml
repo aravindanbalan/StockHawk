@@ -13,5 +13,5 @@
 
     <!-- SyncAdapter related -->
     <string name="sync_account_type" translatable="false">stockhawk.android.sam_chordas.com</string>
-    <string name="content_authority" translatable="false">com.sam_chordas.android.stockhawk</string>
+    <string name="content_authority" translatable="false">com.sam_chordas.android.stockhawk.data.QuoteProvider</string>
 </resources>
