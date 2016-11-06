@@ -73,7 +73,7 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
         return mCursor.getCount();
     }
 
-    public static class StockViewHolder extends RecyclerView.ViewHolder
+    public class StockViewHolder extends RecyclerView.ViewHolder
             implements ItemTouchHelperViewHolder, View.OnClickListener {
         public final TextView symbol;
         public final TextView bidPrice;
@@ -85,6 +85,7 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
             symbol.setTypeface(robotoLight);
             bidPrice = (TextView) itemView.findViewById(R.id.bid_price);
             change = (TextView) itemView.findViewById(R.id.change);
+            itemView.setOnClickListener(this);
         }
 
         @Override
@@ -99,7 +100,10 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
 
         @Override
         public void onClick(View v) {
-
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+            String symbol = mCursor.getString(mCursor.getColumnIndex(QuoteColumns.SYMBOL));
+            mClickHandler.onClick(symbol);
         }
     }
 
@@ -122,7 +126,7 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
     }
 
     public interface QuoteAdapterOnClickHandler {
-        void onClick(String symbol, StockCursorAdapter.StockViewHolder vh);
+        void onClick(String symbol);
     }
 
     private void setTextViewBackground(TextView change) {

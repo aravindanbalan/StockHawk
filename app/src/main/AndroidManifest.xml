@@ -37,6 +37,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+                android:name="com.sam_chordas.android.stockhawk.ui.StockDetailsActivity"
+                android:label="@string/stock_details">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ui.MyStocksActivity" />
+        </activity>
+
+
         <provider
                 android:authorities="@string/content_authority"
                 android:name="com.sam_chordas.android.stockhawk.data.generated.QuoteProvider"

@@ -4,10 +4,13 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -61,8 +64,12 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
 
         mCursorAdapter = new StockCursorAdapter(mContext, new StockCursorAdapter.QuoteAdapterOnClickHandler() {
             @Override
-            public void onClick(String symbol, StockCursorAdapter.StockViewHolder vh) {
+            public void onClick(String symbol) {
+                Uri contentUri = QuoteProvider.Quotes.withSymbol(symbol);
 
+                Intent intent = new Intent(getActivity(), StockDetailsActivity.class)
+                        .setData(contentUri);
+                ActivityCompat.startActivity(getActivity(), intent, null);
             }
         });
         recyclerView.setAdapter(mCursorAdapter);
@@ -182,7 +189,6 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoaderReset(Loader<Cursor> loader) {
         mCursorAdapter.swapCursor(null);
     }
-
 
     public void networkToast() {
         Toast.makeText(mContext, getString(R.string.network_toast), Toast.LENGTH_SHORT).show();
