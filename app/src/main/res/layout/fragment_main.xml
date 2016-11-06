@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
+            android:contentDescription="@string/accessibility_new_stock"
             android:src="@drawable/ic_add_white_24dp"
             fab:fab_colorNormal="@color/material_blue_500"
             fab:fab_colorPressed="@color/material_blue_600"
@@ -26,6 +27,6 @@
             fab:fab_shadow="true"
             fab:fab_type="normal"
             fab:layout_anchor="recycler_view"
-            fab:layout_anchorGravity="bottom | end"
+            fab:layout_anchorGravity="bottom|end"
     />
 </FrameLayout>

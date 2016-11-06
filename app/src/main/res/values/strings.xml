@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Stock Hawk</string>
     <string name="stock_details">Details</string>
+    <string name="accessibility_new_stock">Add new stock</string>
 
     <string name="action_settings">Settings</string>
     <string name="action_change_units">Change Units</string>
@@ -8,7 +9,7 @@
     <string name="search_desc">Search for a Stock Symbol</string>
     <string name="input_hint" translatable="false">FB</string>
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
-    <string name="stock_exists_toast">This stock already exists!</string>
+    <string name="stock_exists_toast">This stock is already saved!</string>
 
     <!-- SyncAdapter related -->
     <string name="sync_account_type" translatable="false">stockhawk.android.sam_chordas.com</string>

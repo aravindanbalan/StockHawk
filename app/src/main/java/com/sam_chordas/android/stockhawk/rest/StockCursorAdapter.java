@@ -27,7 +27,6 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
 
     private Context mContext;
     private static Typeface robotoLight;
-    private boolean isPercent;
     private Cursor mCursor;
     private StockCursorAdapter.QuoteAdapterOnClickHandler mClickHandler;
 
@@ -47,9 +46,11 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
     @Override
     public void onBindViewHolder(final StockCursorAdapter.StockViewHolder stockViewHolder, int position) {
         mCursor.moveToPosition(position);
-        stockViewHolder.symbol.setText(mCursor.getString(mCursor.getColumnIndex("symbol")));
+        String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
+        stockViewHolder.symbol.setText(symbol);
         stockViewHolder.bidPrice.setText(mCursor.getString(mCursor.getColumnIndex("bid_price")));
         setTextViewBackground(stockViewHolder.change);
+        stockViewHolder.itemView.setContentDescription(symbol);
 
         if (Utils.showPercent) {
             stockViewHolder.change.setText(mCursor.getString(mCursor.getColumnIndex("percent_change")));
