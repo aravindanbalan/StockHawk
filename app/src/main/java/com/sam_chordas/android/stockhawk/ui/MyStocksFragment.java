@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -88,19 +89,19 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
                             .inputType(InputType.TYPE_CLASS_TEXT)
                             .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
                                 @Override
-                                public void onInput(MaterialDialog dialog, CharSequence input) {
+                                public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                                     // On FAB click, receive user input. Make sure the stock doesn't already exist
                                     // in the DB and proceed accordingly
                                     Cursor c = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                                             new String[] { QuoteColumns.SYMBOL }, QuoteColumns.SYMBOL + "= ?",
                                             new String[] { input.toString() }, null);
-                                    if (c.getCount() != 0) {
+                                    if (c != null && c.getCount() != 0) {
                                         Toast toast =
                                                 Toast.makeText(mContext, "This stock is already saved!",
                                                         Toast.LENGTH_LONG);
                                         toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                                         toast.show();
-                                        return;
+                                        c.close();
                                     } else {
                                         // Add the stock to DB
                                         mServiceIntent.putExtra("tag", "add");

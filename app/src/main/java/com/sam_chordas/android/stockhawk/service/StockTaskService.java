@@ -51,15 +51,6 @@ public class StockTaskService extends GcmTaskService {
         mContext = context;
     }
 
-    String fetchData(String url) throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
-
     @Override
     public int onRunTask(TaskParams params) {
         Cursor initQueryCursor;
@@ -146,4 +137,12 @@ public class StockTaskService extends GcmTaskService {
         return result;
     }
 
+    private String fetchData(String url) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
 }
