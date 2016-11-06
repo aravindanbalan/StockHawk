@@ -40,7 +40,8 @@
 
         <activity
                 android:name="com.sam_chordas.android.stockhawk.ui.StockDetailsActivity"
-                android:label="@string/stock_details">
+                android:label="@string/stock_details"
+                android:parentActivityName=".ui.MyStocksActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".ui.MyStocksActivity" />

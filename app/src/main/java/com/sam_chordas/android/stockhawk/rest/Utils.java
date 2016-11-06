@@ -17,7 +17,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by sam_chordas on 10/8/15.
@@ -34,6 +38,8 @@ public class Utils {
     private static final String PARAM_QUERY = "query";
     private static final String PARAM_COUNT = "count";
     private static final String PARAM_RESULTS = "results";
+    public static final String DATE_FORMAT_TEMPLATE = "yyyy-MM-dd";
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_TEMPLATE, Locale.ENGLISH);
 
     public static ArrayList<ContentProviderOperation> quoteJsonToContentVals(String JSON) {
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
@@ -116,5 +122,36 @@ public class Utils {
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    public static String buildStockHistoryDataUrl(String stock_symbol){
+        String startDate = Utils.getStartDate();
+        String endDate = Utils.getEndDate();
+        try{
+            String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=";
+            String TABLE_QUERY = "select * from yahoo.finance.historicaldata where " +
+                    "symbol = \""+stock_symbol+"\" and startDate = \""+startDate+"\" " +
+                    "and endDate = \""+endDate+"\"";
+            String FINAL_URL = BASE_URL + URLEncoder.encode(TABLE_QUERY, "UTF-8")
+                    +"&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables."
+                    + "org%2Falltableswithkeys&callback=";
+            return FINAL_URL;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String getEndDate(){
+        //Today's date
+        Calendar calendar = Calendar.getInstance();
+        return SIMPLE_DATE_FORMAT.format(calendar.getTime());
+    }
+
+    public static String getStartDate(){
+        //Previous Year date
+        Calendar today = Calendar.getInstance();
+        today.add(Calendar.MONTH,-12);
+        return SIMPLE_DATE_FORMAT.format(today.getTime());
     }
 }
