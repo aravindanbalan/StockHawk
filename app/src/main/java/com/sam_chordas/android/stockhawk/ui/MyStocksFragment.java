@@ -26,8 +26,7 @@ import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
-import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
+import com.sam_chordas.android.stockhawk.rest.StockCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.sam_chordas.android.stockhawk.sync.StockHawkSyncAdapter;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
@@ -39,7 +38,7 @@ import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallb
 public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private ItemTouchHelper mItemTouchHelper;
     private static final int CURSOR_LOADER_ID = 0;
-    private QuoteCursorAdapter mCursorAdapter;
+    private StockCursorAdapter mCursorAdapter;
     private Context mContext;
     private Cursor mCursor;
     boolean isConnected;
@@ -60,15 +59,12 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        mCursorAdapter = new QuoteCursorAdapter(mContext, null);
-        recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(mContext,
-                new RecyclerViewItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        //TODO:
-                        // do something on item click
-                    }
-                }));
+        mCursorAdapter = new StockCursorAdapter(mContext, new StockCursorAdapter.QuoteAdapterOnClickHandler() {
+            @Override
+            public void onClick(String symbol, StockCursorAdapter.StockViewHolder vh) {
+
+            }
+        });
         recyclerView.setAdapter(mCursorAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
