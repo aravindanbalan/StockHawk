@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,32 +49,14 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
         mCursor.moveToPosition(position);
         stockViewHolder.symbol.setText(mCursor.getString(mCursor.getColumnIndex("symbol")));
         stockViewHolder.bidPrice.setText(mCursor.getString(mCursor.getColumnIndex("bid_price")));
+        setTextViewBackground(stockViewHolder.change);
 
-        int sdk = Build.VERSION.SDK_INT;
-        if (mCursor.getInt(mCursor.getColumnIndex("is_up")) == 1) {
-            if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
-                stockViewHolder.change.setBackgroundDrawable(
-                        mContext.getResources().getDrawable(R.drawable.percent_change_pill_green));
-            } else {
-                stockViewHolder.change.setBackground(
-                        mContext.getResources().getDrawable(R.drawable.percent_change_pill_green));
-            }
-        } else {
-            if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
-                stockViewHolder.change.setBackgroundDrawable(
-                        mContext.getResources().getDrawable(R.drawable.percent_change_pill_red));
-            } else {
-                stockViewHolder.change.setBackground(
-                        mContext.getResources().getDrawable(R.drawable.percent_change_pill_red));
-            }
-        }
         if (Utils.showPercent) {
             stockViewHolder.change.setText(mCursor.getString(mCursor.getColumnIndex("percent_change")));
         } else {
             stockViewHolder.change.setText(mCursor.getString(mCursor.getColumnIndex("change")));
         }
     }
-
 
     @Override
     public void onItemDismiss(int position) {
@@ -140,5 +123,25 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
 
     public interface QuoteAdapterOnClickHandler {
         void onClick(String symbol, StockCursorAdapter.StockViewHolder vh);
+    }
+
+    private void setTextViewBackground(TextView change) {
+        int sdk = Build.VERSION.SDK_INT;
+        if (mCursor.getInt(mCursor.getColumnIndex("is_up")) == 1) {
+            if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
+                change.setBackgroundDrawable(
+                        ContextCompat.getDrawable(mContext, R.drawable.percent_change_pill_green));
+            } else {
+                change.setBackground(ContextCompat.getDrawable(mContext, R.drawable.percent_change_pill_green));
+            }
+        } else {
+            if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
+                change.setBackgroundDrawable(
+                        ContextCompat.getDrawable(mContext, R.drawable.percent_change_pill_red));
+            } else {
+                change.setBackground(
+                        ContextCompat.getDrawable(mContext, R.drawable.percent_change_pill_red));
+            }
+        }
     }
 }

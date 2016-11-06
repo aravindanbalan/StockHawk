@@ -74,26 +74,29 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
             public void onClick(View v) {
                 if (isConnected) {
                     new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
-                            .content(R.string.content_test)
+                            .content(R.string.search_desc)
                             .inputType(InputType.TYPE_CLASS_TEXT)
-                            .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
+                            .input(R.string.input_hint, 0, new MaterialDialog.InputCallback() {
                                 @Override
                                 public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                                     // On FAB click, receive user input. Make sure the stock doesn't already exist
                                     // in the DB and proceed accordingly
                                     Cursor c = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                                             new String[] { QuoteColumns.SYMBOL }, QuoteColumns.SYMBOL + "= ?",
-                                            new String[] { input.toString() }, null);
+                                            new String[] { input.toString().toUpperCase() }, null);
                                     if (c != null && c.getCount() != 0) {
-                                        Toast toast =
-                                                Toast.makeText(mContext, "This stock is already saved!",
-                                                        Toast.LENGTH_LONG);
+                                        Toast toast = Toast.makeText(mContext, R.string.stock_exists_toast,
+                                                Toast.LENGTH_SHORT);
                                         toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                                         toast.show();
                                         c.close();
                                     } else {
                                         // Add the stock to DB
                                         StockHawkSyncAdapter.syncImmediately(getActivity(), StockHawkSyncAdapter.SYNC_TYPE_ADD, input.toString());
+
+                                        if (c != null) {
+                                            c.close();
+                                        }
                                     }
                                 }
                             })
@@ -101,7 +104,6 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
                 } else {
                     networkToast();
                 }
-
             }
         });
 
