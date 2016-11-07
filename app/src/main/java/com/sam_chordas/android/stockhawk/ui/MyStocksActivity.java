@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.sam_chordas.android.stockhawk.R;
-import com.sam_chordas.android.stockhawk.sync.StockHawkSyncAdapter;
 
 public class MyStocksActivity extends AppCompatActivity {
 
@@ -23,7 +22,5 @@ public class MyStocksActivity extends AppCompatActivity {
         if (toolbar != null) {
             toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
         }
-
-        StockHawkSyncAdapter.initializeSyncAdapter(this);
     }
 }

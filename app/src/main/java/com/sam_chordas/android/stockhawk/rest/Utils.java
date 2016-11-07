@@ -2,14 +2,12 @@ package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.ContentProviderOperation;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-import com.sam_chordas.android.stockhawk.model.Quote;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -19,9 +17,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -41,7 +41,7 @@ public class Utils {
     private static final String PARAM_RESULTS = "results";
     private static final String NULL = "null";
     public static final String DATE_FORMAT_TEMPLATE = "yyyy-MM-dd";
-    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_TEMPLATE, Locale.ENGLISH);
+    public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT_TEMPLATE, Locale.ENGLISH);
 
     public static ArrayList<ContentProviderOperation> quoteJsonToContentVals(String JSON) {
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
@@ -55,26 +55,20 @@ public class Utils {
                 if (count == 1) {
                     jsonObject = jsonObject.getJSONObject(PARAM_RESULTS)
                             .getJSONObject(PARAM_QUOTE);
-                    ContentProviderOperation contentProviderOperation = buildBatchOperation(jsonObject);
-                    if (contentProviderOperation != null) {
-                        batchOperations.add(contentProviderOperation);
-                    }
+                    batchOperations.add(buildBatchOperation(jsonObject));
                 } else {
                     resultsArray = jsonObject.getJSONObject(PARAM_RESULTS).getJSONArray(PARAM_QUOTE);
 
                     if (resultsArray != null && resultsArray.length() != 0) {
                         for (int i = 0; i < resultsArray.length(); i++) {
                             jsonObject = resultsArray.getJSONObject(i);
-                            ContentProviderOperation contentProviderOperation = buildBatchOperation(jsonObject);
-                            if (contentProviderOperation != null) {
-                                batchOperations.add(contentProviderOperation);
-                            }
+                            batchOperations.add(buildBatchOperation(jsonObject));
                         }
                     }
                 }
             }
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "String to JSON failed: " + e);
+            Log.i(LOG_TAG, "String to JSON failed: " + e);
         }
         return batchOperations;
     }
@@ -105,34 +99,29 @@ public class Utils {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
         try {
-            if (!jsonObject.getString(PARAM_CHANGE).equals(NULL) && !jsonObject.getString(PARAM_BID).equals(NULL)) {
-
-                String change = jsonObject.getString(PARAM_CHANGE);
-                builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString(PARAM_SYMBOL));
-                builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString(PARAM_BID)));
-                builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
-                        jsonObject.getString(PARAM_CHANGE_IN_PERCENTAGE), true));
-                builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
-                builder.withValue(QuoteColumns.ISCURRENT, 1);
-                if (change.charAt(0) == '-') {
-                    builder.withValue(QuoteColumns.ISUP, 0);
-                } else {
-                    builder.withValue(QuoteColumns.ISUP, 1);
-                }
-
-                builder.withValue(QuoteColumns.NAME, jsonObject.getString("Name"));
-                builder.withValue(QuoteColumns.CURRENCY, jsonObject.getString("Currency"));
-                builder.withValue(QuoteColumns.LASTTRADEDATE, jsonObject.getString("LastTradeDate"));
-                builder.withValue(QuoteColumns.DAYLOW, jsonObject.getString("DaysLow"));
-                builder.withValue(QuoteColumns.DAYHIGH, jsonObject.getString("DaysHigh"));
-                builder.withValue(QuoteColumns.YEARLOW, jsonObject.getString("YearLow"));
-                builder.withValue(QuoteColumns.YEARHIGH, jsonObject.getString("YearHigh"));
-                builder.withValue(QuoteColumns.EARNINGSSHARE, jsonObject.getString("EarningsShare"));
-                builder.withValue(QuoteColumns.MARKETCAPITALIZATION, jsonObject.getString("MarketCapitalization"));
-
+            String change = jsonObject.getString(PARAM_CHANGE);
+            builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString(PARAM_SYMBOL));
+            builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString(PARAM_BID)));
+            builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
+                    jsonObject.getString(PARAM_CHANGE_IN_PERCENTAGE), true));
+            builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
+            builder.withValue(QuoteColumns.ISCURRENT, 1);
+            if (change.charAt(0) == '-') {
+                builder.withValue(QuoteColumns.ISUP, 0);
             } else {
-                return null;
+                builder.withValue(QuoteColumns.ISUP, 1);
             }
+
+            builder.withValue(QuoteColumns.NAME, jsonObject.getString("Name"));
+            builder.withValue(QuoteColumns.CURRENCY, jsonObject.getString("Currency"));
+            builder.withValue(QuoteColumns.LASTTRADEDATE, jsonObject.getString("LastTradeDate"));
+            builder.withValue(QuoteColumns.DAYLOW, jsonObject.getString("DaysLow"));
+            builder.withValue(QuoteColumns.DAYHIGH, jsonObject.getString("DaysHigh"));
+            builder.withValue(QuoteColumns.YEARLOW, jsonObject.getString("YearLow"));
+            builder.withValue(QuoteColumns.YEARHIGH, jsonObject.getString("YearHigh"));
+            builder.withValue(QuoteColumns.EARNINGSSHARE, jsonObject.getString("EarningsShare"));
+            builder.withValue(QuoteColumns.MARKETCAPITALIZATION, jsonObject.getString("MarketCapitalization"));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -149,14 +138,14 @@ public class Utils {
     public static String getEndDate() {
         //Today's date
         Calendar calendar = Calendar.getInstance();
-        return SIMPLE_DATE_FORMAT.format(calendar.getTime());
+        return simpleDateFormat.format(calendar.getTime());
     }
 
     public static String getStartDate() {
         //Previous Year date
         Calendar today = Calendar.getInstance();
         today.add(Calendar.MONTH, -12);
-        return SIMPLE_DATE_FORMAT.format(today.getTime());
+        return simpleDateFormat.format(today.getTime());
     }
 
     public static String fetchData(OkHttpClient client, String url) throws IOException {
@@ -168,28 +157,31 @@ public class Utils {
         return response.body().string();
     }
 
-    public static String convertDate(String inputDate) {
-        StringBuilder outputFormattedDate = new StringBuilder();
-        outputFormattedDate.append(inputDate.substring(6))
-                .append("/")
-                .append(inputDate.substring(4, 6))
-                .append("/")
-                .append(inputDate.substring(2, 4));
-        return outputFormattedDate.toString();
+    public static String buildStockHistoryUrl(String stock_symbol) {
+        String startDate = Utils.getStartDate();
+        String endDate = Utils.getEndDate();
+        try {
+            String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=";
+            String TABLE_QUERY = "select * from yahoo.finance.historicaldata where " +
+                    "symbol = \"" + stock_symbol + "\" and startDate = \"" + startDate + "\" " +
+                    "and endDate = \"" + endDate + "\"";
+            String FINAL_URL = BASE_URL + URLEncoder.encode(TABLE_QUERY, "UTF-8")
+                    + "&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables."
+                    + "org%2Falltableswithkeys&callback=";
+            return FINAL_URL;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public static Quote convertCursorToQuote(Cursor cursor) {
-        Quote quote = new Quote(
-                cursor.getString(cursor.getColumnIndex(QuoteColumns.NAME)),
-                cursor.getString(cursor.getColumnIndex(QuoteColumns.CURRENCY)),
-                cursor.getString(cursor.getColumnIndex(QuoteColumns.LASTTRADEDATE)),
-                cursor.getString(cursor.getColumnIndex(QuoteColumns.DAYLOW)),
-                cursor.getString(cursor.getColumnIndex(QuoteColumns.DAYHIGH)),
-                cursor.getString(cursor.getColumnIndex(QuoteColumns.YEARLOW)),
-                cursor.getString(cursor.getColumnIndex(QuoteColumns.YEARHIGH)),
-                cursor.getString(cursor.getColumnIndex(QuoteColumns.EARNINGSSHARE)),
-                cursor.getString(cursor.getColumnIndex(QuoteColumns.MARKETCAPITALIZATION))
-        );
-        return quote;
+    public static Date parseDateString(final String date) {
+        try {
+            return simpleDateFormat.parse(date);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

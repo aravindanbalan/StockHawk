@@ -29,7 +29,7 @@ import com.sam_chordas.android.stockhawk.events.QuoteHistoryEvent;
 import com.sam_chordas.android.stockhawk.model.Quote;
 import com.sam_chordas.android.stockhawk.model.QuoteHistory;
 import com.sam_chordas.android.stockhawk.rest.Utils;
-import com.sam_chordas.android.stockhawk.sync.StockHawkHistoryAsyncTask;
+import com.sam_chordas.android.stockhawk.service.StockHawkHistoryAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +43,8 @@ import de.greenrobot.event.EventBus;
 public class StockDetailFragment extends Fragment {
     private static final String LOG_TAG = StockDetailFragment.class.getSimpleName();
 
-    public static final String DETAIL_URI = "URI";
     public static final String QUOTE_EXTRA = "quote";
+    public static final String SYMBOL_EXTRA = "symbol";
     private Uri mUri;
     private String mSymbol;
     private LineChart mLineChart;
@@ -63,10 +63,10 @@ public class StockDetailFragment extends Fragment {
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            mUri = arguments.getParcelable(DETAIL_URI);
             mQuote = arguments.getParcelable(QUOTE_EXTRA);
-            mSymbol = QuoteProvider.Quotes.getSymbol(mUri);
-            new StockHawkHistoryAsyncTask(mSymbol, "1y").execute();
+            mSymbol = arguments.getString(SYMBOL_EXTRA);
+            mUri = QuoteProvider.Quotes.withSymbol(mSymbol);
+
             getActivity().setTitle(mQuote.name);
         }
 
@@ -112,7 +112,7 @@ public class StockDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
-        new StockHawkHistoryAsyncTask(mSymbol, "1y").execute();
+        new StockHawkHistoryAsyncTask(mSymbol).execute();
         mProgressSpinner.setVisibility(View.VISIBLE);
         mStockDetails.setVisibility(View.GONE);
     }
@@ -146,7 +146,7 @@ public class StockDetailFragment extends Fragment {
             QuoteHistory quote = quoteHistoryList.get(i);
             double yValue = quote.close;
 
-            xvalues.add(Utils.convertDate(quote.date));
+            xvalues.add(quote.date);
             mLineDataSet.addEntry(
                     // add Stock entry to yValues
                     new Entry((float) yValue, i, quote)
@@ -204,7 +204,7 @@ public class StockDetailFragment extends Fragment {
             // when marker is selected, update data on cardView
             QuoteHistory quote = (QuoteHistory) e.getData();
             String price = getString(R.string.bid_price, "" + (float) quote.getClose());
-            String date = Utils.convertDate(quote.getDate());
+            String date = quote.getDate();
             stock_history.setText(date.concat(" ").concat(price));
         }
 

@@ -24,8 +24,9 @@ public class StockDetailsActivity extends AppCompatActivity {
             // using a fragment transaction.
 
             Bundle arguments = new Bundle();
+            String symbol = getIntent().getStringExtra(StockDetailFragment.SYMBOL_EXTRA);
             Quote quote = getIntent().getParcelableExtra(StockDetailFragment.QUOTE_EXTRA);
-            arguments.putParcelable(StockDetailFragment.DETAIL_URI, getIntent().getData());
+            arguments.putString(StockDetailFragment.SYMBOL_EXTRA, symbol);
             arguments.putParcelable(StockDetailFragment.QUOTE_EXTRA, quote);
 
             StockDetailFragment fragment = new StockDetailFragment();

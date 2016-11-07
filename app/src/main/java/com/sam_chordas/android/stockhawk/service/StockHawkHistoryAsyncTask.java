@@ -1,7 +1,6 @@
-package com.sam_chordas.android.stockhawk.sync;
+package com.sam_chordas.android.stockhawk.service;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.sam_chordas.android.stockhawk.events.QuoteHistoryEvent;
@@ -15,6 +14,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -25,19 +25,18 @@ import de.greenrobot.event.EventBus;
 
 public class StockHawkHistoryAsyncTask extends AsyncTask<Void, Void, List<QuoteHistory>> {
     public final String LOG_TAG = StockHawkHistoryAsyncTask.class.getSimpleName();
-    private static final String JSON_SERIES = "series";
+
+    private static final String JSON_QUERY = "query";
+    private static final String JSON_RESULTS = "results";
+    private static final String JSON_QUOTE = "quote";
     private static final String JSON_DATE = "Date";
-    private static final String JSON_CLOSE = "close";
+    private static final String JSON_CLOSE = "Close";
+
     private String mSymbol;
-    private String mDateSpan;
     private OkHttpClient client;
 
-    private final String BASE_URL = "http://chartapi.finance.yahoo.com/instrument/1.0/";
-    private final String END_URL = "/chartdata;type=quote;range=1y/json";
-
-    public StockHawkHistoryAsyncTask(String symbol, String range) {
+    public StockHawkHistoryAsyncTask(String symbol) {
         mSymbol = symbol;
-        mDateSpan = range;
     }
 
     @Override
@@ -49,7 +48,7 @@ public class StockHawkHistoryAsyncTask extends AsyncTask<Void, Void, List<QuoteH
     @Override
     protected List<QuoteHistory> doInBackground(Void... params) {
 
-        String URL = BASE_URL + mSymbol + END_URL;
+        String URL = Utils.buildStockHistoryUrl(mSymbol);
         StringBuilder urlStringBuilder = new StringBuilder();
         urlStringBuilder.append(URL);
 
@@ -61,9 +60,6 @@ public class StockHawkHistoryAsyncTask extends AsyncTask<Void, Void, List<QuoteH
         try {
             response = Utils.fetchData(client, urlString);
             result = GcmNetworkManager.RESULT_SUCCESS;
-
-            Log.i(LOG_TAG, "********* history for symbol : " + mSymbol + "  : " + response);
-
             return processJson(response);
 
         } catch (IOException e) {
@@ -83,12 +79,13 @@ public class StockHawkHistoryAsyncTask extends AsyncTask<Void, Void, List<QuoteH
 
     @Override
     protected void onPostExecute(List<QuoteHistory> quoteHistoryList) {
-
         if (quoteHistoryList == null || quoteHistoryList.size() == 0) {
             EventBus.getDefault().post(new QuoteHistoryEvent());
             return;
         }
 
+        //To make it in chronological order
+        Collections.reverse(quoteHistoryList);
         EventBus.getDefault().post(new QuoteHistoryEvent(quoteHistoryList));
     }
 
@@ -96,10 +93,11 @@ public class StockHawkHistoryAsyncTask extends AsyncTask<Void, Void, List<QuoteH
         List<QuoteHistory> quoteHistoryList = new ArrayList<>();
 
         try {
-            String json = response.substring(response.indexOf("(") + 1, response.lastIndexOf(")"));
-            JSONObject mainObject = new JSONObject(json);
-            JSONArray series_data = mainObject.getJSONArray(JSON_SERIES);
-            for (int i = 0; i < series_data.length(); i += 10) {
+            JSONObject mainObject = new JSONObject(response);
+            JSONObject queryObject = mainObject.getJSONObject(JSON_QUERY);
+            JSONObject resultObject = queryObject.getJSONObject(JSON_RESULTS);
+            JSONArray series_data = resultObject.getJSONArray(JSON_QUOTE);
+            for (int i = 0; i < series_data.length(); i++) {
                 JSONObject singleObject = series_data.getJSONObject(i);
                 String date = singleObject.getString(JSON_DATE);
                 double close = singleObject.getDouble(JSON_CLOSE);

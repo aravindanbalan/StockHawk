@@ -45,38 +45,44 @@
                 android:parentActivityName=".ui.MyStocksActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.MyStocksActivity" />
+                    android:value=".ui.MyStocksActivity"/>
         </activity>
 
 
         <provider
                 android:authorities="@string/content_authority"
                 android:name="com.sam_chordas.android.stockhawk.data.generated.QuoteProvider"
-                android:exported="false"
-                android:syncable="true"/>
+                android:exported="true"/>
 
-        <!-- SyncAdapter's dummy authentication service -->
-        <service android:name=".sync.StockHawkAuthenticatorService">
+        <!--</service>-->
+        <service android:name="com.sam_chordas.android.stockhawk.service.StockTaskService"
+                 android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE"
+                 android:exported="true">
             <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator"/>
+                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY"/>
+            </intent-filter>
+        </service>
+        <service android:name="com.sam_chordas.android.stockhawk.service.StockIntentService"/>
+
+        <!--Widget Sample-->
+        <receiver android:name=".widgets.StockHawkWidgetProvider"
+                  android:label="@string/widget_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <!--Register Broadcast-->
+                <action android:name="com.example.sam_chordas.stockhawk.STOCK_DATA_UPDATE"/>
             </intent-filter>
             <meta-data
-                    android:name="android.accounts.AccountAuthenticator"
-                    android:resource="@xml/authenticator"/>
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/widget_info"
+            />
+        </receiver>
+        <!--RemoteViews of Widget-->
+        <service android:name=".widgets.StockHawkWidgetRemoteViewService"
+                 android:enabled="true"
+                 android:exported="true"
+                 android:permission="android.permission.BIND_REMOTEVIEWS">
         </service>
-
-        <!-- The SyncAdapter service -->
-        <service
-                android:name=".sync.StockHawkSyncService"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter"/>
-            </intent-filter>
-            <meta-data
-                    android:name="android.content.SyncAdapter"
-                    android:resource="@xml/syncadapter"/>
-        </service>
-
     </application>
 
 </manifest>

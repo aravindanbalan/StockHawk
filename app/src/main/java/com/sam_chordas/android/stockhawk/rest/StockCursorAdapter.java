@@ -1,6 +1,7 @@
 package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.sam_chordas.android.stockhawk.IConstants;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
@@ -47,16 +49,22 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
     @Override
     public void onBindViewHolder(final StockCursorAdapter.StockViewHolder stockViewHolder, int position) {
         mCursor.moveToPosition(position);
-        String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
-        stockViewHolder.symbol.setText(symbol);
-        stockViewHolder.bidPrice.setText(mCursor.getString(mCursor.getColumnIndex("bid_price")));
+
+        String stockSymbol = mCursor.getString(mCursor.getColumnIndex(QuoteColumns.SYMBOL));
+        String stockBidPrice = mCursor.getString(mCursor.getColumnIndex(QuoteColumns.BIDPRICE));
+        String stockPriceChange = mCursor.getString(mCursor.getColumnIndex(QuoteColumns.CHANGE));
+        String stockPercentChange = mCursor.getString(mCursor.getColumnIndex(QuoteColumns.PERCENT_CHANGE));
+        int isUp = mCursor.getInt(mCursor.getColumnIndex(QuoteColumns.ISUP));
+
+        stockViewHolder.symbol.setText(stockSymbol);
+        stockViewHolder.bidPrice.setText(stockBidPrice);
         setTextViewBackground(stockViewHolder.change);
-        stockViewHolder.itemView.setContentDescription(symbol);
+        stockViewHolder.itemView.setContentDescription(stockSymbol);
 
         if (Utils.showPercent) {
-            stockViewHolder.change.setText(mCursor.getString(mCursor.getColumnIndex("percent_change")));
+            stockViewHolder.change.setText(stockPercentChange);
         } else {
-            stockViewHolder.change.setText(mCursor.getString(mCursor.getColumnIndex("change")));
+            stockViewHolder.change.setText(stockPriceChange);
         }
     }
 
@@ -66,6 +74,11 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
         c.moveToPosition(position);
         String symbol = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
         mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
+
+        // send broadcast so Widget can remove the deleted item
+        Intent broadcastIntent = new Intent(IConstants.ACTION_STOCK_UPDATE)
+                .setPackage(mContext.getPackageName());
+        mContext.sendBroadcast(broadcastIntent);
         notifyItemRemoved(position);
     }
 
@@ -108,11 +121,11 @@ public class StockCursorAdapter extends RecyclerView.Adapter<StockCursorAdapter.
             Quote quote = new Quote(
                     mCursor.getString(mCursor.getColumnIndex(QuoteColumns.NAME)),
                     mCursor.getString(mCursor.getColumnIndex(QuoteColumns.CURRENCY)),
-                    mCursor.getString(mCursor.getColumnIndex(QuoteColumns.LASTTRADEDATE)),
                     mCursor.getString(mCursor.getColumnIndex(QuoteColumns.DAYLOW)),
                     mCursor.getString(mCursor.getColumnIndex(QuoteColumns.DAYHIGH)),
                     mCursor.getString(mCursor.getColumnIndex(QuoteColumns.YEARLOW)),
                     mCursor.getString(mCursor.getColumnIndex(QuoteColumns.YEARHIGH)),
+                    mCursor.getString(mCursor.getColumnIndex(QuoteColumns.LASTTRADEDATE)),
                     mCursor.getString(mCursor.getColumnIndex(QuoteColumns.EARNINGSSHARE)),
                     mCursor.getString(mCursor.getColumnIndex(QuoteColumns.MARKETCAPITALIZATION))
             );
